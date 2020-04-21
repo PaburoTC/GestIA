@@ -130,6 +130,8 @@ def AltTab():
     time.sleep(2)
     ReleaseKey(VK_MENU)  # Alt~
 
+
+
 def build_argparser():
     parser = ArgumentParser(add_help=False)
     args = parser.add_argument_group('Options')
@@ -140,7 +142,6 @@ def build_argparser():
                       help="Optional. Specify the target device to infer on; CPU, GPU, FPGA, HDDL or MYRIAD is "
                            "acceptable. The demo will look for a suitable plugin for device specified. "
                            "Default value is CPU", default="CPU", type=str)
-    args.add_argument("--labels", help="Optional. Path to labels mapping file", default=None, type=str)
     args.add_argument("--no_show", help="Optional. Don't show output", action='store_true')
 
     return parser
@@ -197,11 +198,8 @@ def main():
     cap = cv2.VideoCapture(0)
     assert cap.isOpened(), "Can't open camera 0 "
 
-    if args.labels:
-        with open(args.labels, 'r') as f:
-            labels_map = [x.strip() for x in f]
-    else:
-        labels_map = None
+    with open('gesture_labels.txt', 'r') as f:
+        labels_map = [x.strip() for x in f]
 
     cur_request_id = 0
     next_request_id = 1
