@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 """
  Copyright (C) 2018-2019 Intel Corporation
-
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
       http://www.apache.org/licenses/LICENSE-2.0
-
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,49 +20,48 @@ import cv2
 import time
 import logging as log
 
-import keyboard
-
-from keyboardController import keyboardController
 from openvino.inference_engine import IENetwork, IECore
 
-import ctypes
-from ctypes import wintypes
+#import ctypes
+#from ctypes import wintypes
 import time
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 
-INPUT_MOUSE    = 0
+INPUT_MOUSE = 0
 INPUT_KEYBOARD = 1
 INPUT_HARDWARE = 2
 
 KEYEVENTF_EXTENDEDKEY = 0x0001
-KEYEVENTF_KEYUP       = 0x0002
-KEYEVENTF_UNICODE     = 0x0004
-KEYEVENTF_SCANCODE    = 0x0008
+KEYEVENTF_KEYUP = 0x0002
+KEYEVENTF_UNICODE = 0x0004
+KEYEVENTF_SCANCODE = 0x0008
 
 MAPVK_VK_TO_VSC = 0
 
 # msdn.microsoft.com/en-us/library/dd375731
-VK_TAB  = 0x09
+VK_TAB = 0x09
 VK_MENU = 0x12
 
 # C struct definitions
 
 wintypes.ULONG_PTR = wintypes.WPARAM
 
+
 class MOUSEINPUT(ctypes.Structure):
-    _fields_ = (("dx",          wintypes.LONG),
-                ("dy",          wintypes.LONG),
-                ("mouseData",   wintypes.DWORD),
-                ("dwFlags",     wintypes.DWORD),
-                ("time",        wintypes.DWORD),
+    _fields_ = (("dx", wintypes.LONG),
+                ("dy", wintypes.LONG),
+                ("mouseData", wintypes.DWORD),
+                ("dwFlags", wintypes.DWORD),
+                ("time", wintypes.DWORD),
                 ("dwExtraInfo", wintypes.ULONG_PTR))
 
+
 class KEYBDINPUT(ctypes.Structure):
-    _fields_ = (("wVk",         wintypes.WORD),
-                ("wScan",       wintypes.WORD),
-                ("dwFlags",     wintypes.DWORD),
-                ("time",        wintypes.DWORD),
+    _fields_ = (("wVk", wintypes.WORD),
+                ("wScan", wintypes.WORD),
+                ("dwFlags", wintypes.DWORD),
+                ("time", wintypes.DWORD),
                 ("dwExtraInfo", wintypes.ULONG_PTR))
 
     def __init__(self, *args, **kwds):
@@ -76,31 +72,38 @@ class KEYBDINPUT(ctypes.Structure):
             self.wScan = user32.MapVirtualKeyExW(self.wVk,
                                                  MAPVK_VK_TO_VSC, 0)
 
+
 class HARDWAREINPUT(ctypes.Structure):
-    _fields_ = (("uMsg",    wintypes.DWORD),
+    _fields_ = (("uMsg", wintypes.DWORD),
                 ("wParamL", wintypes.WORD),
                 ("wParamH", wintypes.WORD))
+
 
 class INPUT(ctypes.Structure):
     class _INPUT(ctypes.Union):
         _fields_ = (("ki", KEYBDINPUT),
                     ("mi", MOUSEINPUT),
                     ("hi", HARDWAREINPUT))
+
     _anonymous_ = ("_input",)
-    _fields_ = (("type",   wintypes.DWORD),
+    _fields_ = (("type", wintypes.DWORD),
                 ("_input", _INPUT))
 
+
 LPINPUT = ctypes.POINTER(INPUT)
+
 
 def _check_count(result, func, args):
     if result == 0:
         raise ctypes.WinError(ctypes.get_last_error())
     return args
 
+
 user32.SendInput.errcheck = _check_count
-user32.SendInput.argtypes = (wintypes.UINT, # nInputs
-                             LPINPUT,       # pInputs
+user32.SendInput.argtypes = (wintypes.UINT,  # nInputs
+                             LPINPUT,  # pInputs
                              ctypes.c_int)  # cbSize
+
 
 # Functions
 
@@ -109,22 +112,23 @@ def PressKey(hexKeyCode):
               ki=KEYBDINPUT(wVk=hexKeyCode))
     user32.SendInput(1, ctypes.byref(x), ctypes.sizeof(x))
 
+
 def ReleaseKey(hexKeyCode):
     x = INPUT(type=INPUT_KEYBOARD,
               ki=KEYBDINPUT(wVk=hexKeyCode,
                             dwFlags=KEYEVENTF_KEYUP))
     user32.SendInput(1, ctypes.byref(x), ctypes.sizeof(x))
 
+
 def AltTab():
     """Press Alt+Tab and hold Alt key for 2 seconds
     in order to see the overlay.
     """
-    PressKey(VK_MENU)   # Alt
-    PressKey(VK_TAB)    # Tab
+    PressKey(VK_MENU)  # Alt
+    PressKey(VK_TAB)  # Tab
     ReleaseKey(VK_TAB)  # Tab~
     time.sleep(2)
-    ReleaseKey(VK_MENU) # Alt~
-
+    ReleaseKey(VK_MENU)  # Alt~
 
 def build_argparser():
     parser = ArgumentParser(add_help=False)
@@ -136,6 +140,7 @@ def build_argparser():
                       help="Optional. Specify the target device to infer on; CPU, GPU, FPGA, HDDL or MYRIAD is "
                            "acceptable. The demo will look for a suitable plugin for device specified. "
                            "Default value is CPU", default="CPU", type=str)
+    args.add_argument("--labels", help="Optional. Path to labels mapping file", default=None, type=str)
     args.add_argument("--no_show", help="Optional. Don't show output", action='store_true')
 
     return parser
@@ -144,8 +149,7 @@ def build_argparser():
 def main():
     log.basicConfig(format="[ %(levelname)s ] %(message)s", level=log.INFO, stream=sys.stdout)
     args = build_argparser().parse_args()
-    model_xml = 'gestures_inference_graph_16Abril_10am/ir/fp32/frozen_inference_graph.xml'
-    print(model_xml)
+    model_xml = 'gestures_inference_graph_16Abril_10am/ir/fp16/frozen_inference_graph.xml'
     model_bin = os.path.splitext(model_xml)[0] + ".bin"
 
     log.info("Creating Inference Engine...")
@@ -191,10 +195,13 @@ def main():
         feed_dict[img_info_input_blob] = [h, w, 1]
 
     cap = cv2.VideoCapture(0)
-    assert cap.isOpened(), "Can't open camera 0"
+    assert cap.isOpened(), "Can't open camera 0 "
 
-    with open('gesture_labels.txt', 'r') as f:
-        labels_map = [x.strip() for x in f]
+    if args.labels:
+        with open(args.labels, 'r') as f:
+            labels_map = [x.strip() for x in f]
+    else:
+        labels_map = None
 
     cur_request_id = 0
     next_request_id = 1
@@ -225,10 +232,7 @@ def main():
         # in the truly Async mode we start the NEXT infer request, while waiting for the CURRENT to complete
         # in the regular mode we start the CURRENT request and immediately wait for it's completion
 
-
-
         inf_start = time.time()
-
 
         if is_async_mode:
             in_frame = cv2.resize(next_frame, (w, h))
@@ -246,25 +250,23 @@ def main():
             inf_end = time.time()
             det_time = inf_end - inf_start
 
-                # Parse detection results of the current request
-                res = exec_net.requests[cur_request_id].outputs[out_blob]
-                #keyboardController(res[0][0])
-                for obj in res[0][0]:
-                    # Draw only objects when probability more than specified threshold
-                    if obj[2] > 0.6:
-                        keyboard.press_and_release('SPACE')
-                        xmin = int(obj[3] * frame_w)
-                        ymin = int(obj[4] * frame_h)
-                        xmax = int(obj[5] * frame_w)
-                        ymax = int(obj[6] * frame_h)
-                        class_id = int(obj[1])
-
-                        # Draw box and label\class_id
-                        color = (min(class_id * 12.5, 255), min(class_id * 7, 255), min(class_id * 5, 255))
-                        cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), color, 2)
-                        det_label = labels_map[class_id] if labels_map else str(class_id)
-                        cv2.putText(frame, det_label + ' ' + str(round(obj[2] * 100, 1)) + ' %', (xmin, ymin - 7),
-                                    cv2.FONT_HERSHEY_COMPLEX, 0.6, color, 1)
+            # Parse detection results of the current request
+            res = exec_net.requests[cur_request_id].outputs[out_blob]
+            for obj in res[0][0]:
+                # Draw only objects when probability more than specified threshold
+                if obj[2] > 0.6:
+                    xmin = int(obj[3] * frame_w)
+                    ymin = int(obj[4] * frame_h)
+                    xmax = int(obj[5] * frame_w)
+                    ymax = int(obj[6] * frame_h)
+                    class_id = int(obj[1])
+                    # Draw box and label\class_id
+                    color = (min(class_id * 12.5, 255), min(class_id * 7, 255), min(class_id * 5, 255))
+                    cv2.rectangle(frame, (xmin, ymin), (xmax, ymax), color, 2)
+                    det_label = labels_map[class_id] if labels_map else str(class_id)
+                    action = labels_map[class_id] if labels_map else str(class_id)
+                    cv2.putText(frame, det_label + ' ' + str(round(obj[2] * 100, 1)) + ' %', (xmin, ymin - 7),
+                                cv2.FONT_HERSHEY_COMPLEX, 0.6, color, 1)
 
             # Draw performance stats
             inf_time_message = "Inference time: N\A for async mode" if is_async_mode else \
@@ -278,22 +280,23 @@ def main():
             cv2.putText(frame, async_mode_message, (10, int(frame_h - 20)), cv2.FONT_HERSHEY_COMPLEX, 0.5,
                         (10, 10, 200), 1)
 
-        if(action == 'fist'):
+        if action == 'fist':
             PressKey(0x44)
             time.sleep(0.5)
             ReleaseKey(0x44)
-        elif(action =='daddy_finger'):
+        elif action == 'daddy_finger':
             PressKey(0x41)
             time.sleep(0.5)
             ReleaseKey(0x41)
-        elif(action == 'palm_open' or action == 'palm_close'):
+        elif action == 'palm_open' or action == 'palm_close':
             PressKey(0x43)
             time.sleep(0.5)
             ReleaseKey(0x43)
-        elif(action == 'two' or action == 'three'):
+        elif action == 'two' or action == 'three':
             PressKey(0x57)
             time.sleep(0.5)
             ReleaseKey(0x57)
+
         render_start = time.time()
         if not args.no_show:
             cv2.imshow("Detection Results", frame)
@@ -309,11 +312,12 @@ def main():
             key = cv2.waitKey(1)
             if key == 27:
                 break
-            if (9 == key):
+            if 9 == key:
                 is_async_mode = not is_async_mode
                 log.info("Switched to {} mode".format("async" if is_async_mode else "sync"))
 
     cv2.destroyAllWindows()
+
 
 if __name__ == '__main__':
     sys.exit(main() or 0)
