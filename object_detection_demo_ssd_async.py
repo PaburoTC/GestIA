@@ -22,8 +22,8 @@ import logging as log
 
 from openvino.inference_engine import IENetwork, IECore
 
-#import ctypes
-#from ctypes import wintypes
+import ctypes
+from ctypes import wintypes
 import time
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
@@ -131,10 +131,15 @@ def AltTab():
     ReleaseKey(VK_MENU)  # Alt~
 
 
-
 def build_argparser():
     parser = ArgumentParser(add_help=False)
     args = parser.add_argument_group('Options')
+    args.add_argument('-h', '--help', action='help', default=SUPPRESS, help='Show this help message and exit.')
+    args.add_argument("-m", "--model", help="Required. Path to an .xml file with a trained model.",
+                      required=True, type=str)
+    args.add_argument("-i", "--input",
+                      help="Required. Path to video file or image. 'cam' for capturing video stream from camera",
+                      required=True, type=str)
     args.add_argument("-l", "--cpu_extension",
                       help="Optional. Required for CPU custom layers. Absolute path to a shared library with the "
                            "kernels implementations.", type=str, default=None)
@@ -142,6 +147,9 @@ def build_argparser():
                       help="Optional. Specify the target device to infer on; CPU, GPU, FPGA, HDDL or MYRIAD is "
                            "acceptable. The demo will look for a suitable plugin for device specified. "
                            "Default value is CPU", default="CPU", type=str)
+    args.add_argument("--labels", help="Optional. Path to labels mapping file", default=None, type=str)
+    args.add_argument("-pt", "--prob_threshold", help="Optional. Probability threshold for detections filtering",
+                      default=0.5, type=float)
     args.add_argument("--no_show", help="Optional. Don't show output", action='store_true')
 
     return parser
@@ -150,7 +158,7 @@ def build_argparser():
 def main():
     log.basicConfig(format="[ %(levelname)s ] %(message)s", level=log.INFO, stream=sys.stdout)
     args = build_argparser().parse_args()
-    model_xml = 'gestures_inference_graph_16Abril_10am/ir/fp16/frozen_inference_graph.xml'
+    model_xml = args.model
     model_bin = os.path.splitext(model_xml)[0] + ".bin"
 
     log.info("Creating Inference Engine...")
@@ -195,11 +203,18 @@ def main():
     if img_info_input_blob:
         feed_dict[img_info_input_blob] = [h, w, 1]
 
-    cap = cv2.VideoCapture(0)
-    assert cap.isOpened(), "Can't open camera 0 "
+    if args.input == 'cam':
+        input_stream = 0
+    else:
+        input_stream = args.input
+    cap = cv2.VideoCapture(input_stream)
+    assert cap.isOpened(), "Can't open " + input_stream
 
-    with open('gesture_labels.txt', 'r') as f:
-        labels_map = [x.strip() for x in f]
+    if args.labels:
+        with open(args.labels, 'r') as f:
+            labels_map = [x.strip() for x in f]
+    else:
+        labels_map = None
 
     cur_request_id = 0
     next_request_id = 1
@@ -252,7 +267,7 @@ def main():
             res = exec_net.requests[cur_request_id].outputs[out_blob]
             for obj in res[0][0]:
                 # Draw only objects when probability more than specified threshold
-                if obj[2] > 0.6:
+                if obj[2] > args.prob_threshold:
                     xmin = int(obj[3] * frame_w)
                     ymin = int(obj[4] * frame_h)
                     xmax = int(obj[5] * frame_w)
@@ -278,23 +293,22 @@ def main():
             cv2.putText(frame, async_mode_message, (10, int(frame_h - 20)), cv2.FONT_HERSHEY_COMPLEX, 0.5,
                         (10, 10, 200), 1)
 
-        if action == 'fist':
+        if (action == 'fist'):
             PressKey(0x44)
             time.sleep(0.5)
             ReleaseKey(0x44)
-        elif action == 'daddy_finger':
+        elif (action == 'daddy_finger'):
             PressKey(0x41)
             time.sleep(0.5)
             ReleaseKey(0x41)
-        elif action == 'palm_open' or action == 'palm_close':
+        elif (action == 'palm_open' or action == 'palm_close'):
             PressKey(0x43)
             time.sleep(0.5)
             ReleaseKey(0x43)
-        elif action == 'two' or action == 'three':
+        elif (action == 'two' or action == 'three'):
             PressKey(0x57)
             time.sleep(0.5)
             ReleaseKey(0x57)
-
         render_start = time.time()
         if not args.no_show:
             cv2.imshow("Detection Results", frame)
@@ -310,7 +324,7 @@ def main():
             key = cv2.waitKey(1)
             if key == 27:
                 break
-            if 9 == key:
+            if (9 == key):
                 is_async_mode = not is_async_mode
                 log.info("Switched to {} mode".format("async" if is_async_mode else "sync"))
 
