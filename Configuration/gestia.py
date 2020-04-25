@@ -34,13 +34,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.timer.start(1);
 
     def show_frame(self):
-        
+        # Capture frame from webcam
         ret, frame = self.webcam.read()
         if not ret:
             return
+        # Process image to show on QtGui
         image = QtGui.QImage(frame, frame.shape[1], frame.shape[0], frame.shape[1] * frame.shape[2], QtGui.QImage.Format_RGB888)
         pixmap = QtGui.QPixmap()
         pixmap.convertFromImage(image.rgbSwapped())
+        # Show image as a pixelmap on labelCam
         self.labelCam.setPixmap(pixmap)
         
         
