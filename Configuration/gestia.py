@@ -5,27 +5,32 @@ from config_ui import *
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
+        # Set up environment
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         self.setupUi(self)
+        
+        # Connect application logic
         self.startButton.clicked.connect(self.startRecording)
         self.stopButton.clicked.connect(self.stopRecording)
+
         # Configure timer for screen recording
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.show_frame)
-        self.stopButton.setEnabled(False);
+
         # Get webcam object 
         self.webcam = cv2.VideoCapture(0)
+        
+        # GUI enable/disable logic
+        self.stopButton.setEnabled(False);
         
     def stopRecording(self):
         self.startButton.setEnabled(True);
         self.timer.stop()
         self.stopButton.setEnabled(False);
 
-
     def startRecording(self):
         self.startButton.setEnabled(False);
         self.stopButton.setEnabled(True);
-        
         self.timer.start(1);
 
     def show_frame(self):
