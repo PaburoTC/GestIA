@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>687</width>
-    <height>432</height>
+    <width>681</width>
+    <height>422</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -27,7 +27,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>40</y>
+      <y>10</y>
       <width>391</width>
       <height>311</height>
      </rect>
@@ -67,8 +67,8 @@
    <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>360</y>
+      <x>70</x>
+      <y>340</y>
       <width>131</width>
       <height>51</height>
      </rect>
@@ -77,21 +77,11 @@
      <string>Start</string>
     </property>
    </widget>
-   <widget class="QGraphicsView" name="detectionCapture">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>60</y>
-      <width>221</width>
-      <height>181</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>30</y>
+      <x>460</x>
+      <y>10</y>
       <width>151</width>
       <height>20</height>
      </rect>
@@ -100,40 +90,173 @@
      <string>Detection: Nothing</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="assignButton">
+   <widget class="QPushButton" name="assignFist">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>260</y>
-      <width>71</width>
+      <x>460</x>
+      <y>40</y>
+      <width>131</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Assign key</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="ketTextbox">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>260</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
+     <string>Fist</string>
     </property>
    </widget>
    <widget class="QPushButton" name="stopButton">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>360</y>
+      <x>250</x>
+      <y>340</y>
       <width>131</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
      <string>Stop</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="assignPalmC">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>90</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Palm_close</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="assignPalmO">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>140</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Palm_open</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="assignThumbsU">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>190</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Thumbs_up</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="assignThumbsD">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>240</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Thumbs_down</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="actionPalmC">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>90</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SPACE</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="actionFist">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>40</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SPACE</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="actionPalmO">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>140</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SPACE</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="actionThumbsU">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>190</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SPACE</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="actionThumbsD">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>240</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SPACE</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="assignDaddyF">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>290</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Daddy_finger</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="actionDaddyF">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>290</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SPACE</string>
     </property>
    </widget>
   </widget>

@@ -1,7 +1,10 @@
 import sys
+import time
+
 import cv2
+import keyboard
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from config_ui import *
+from config import *
 from detector import *
 import json
 
@@ -15,7 +18,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Connect application logic
         self.startButton.clicked.connect(self.startRecording)
         self.stopButton.clicked.connect(self.stopRecording)
-        self.assignButton.clicked.connect(self.update_actions)
+
+        self.assignFist.clicked.connect(self.updateFist)
+        self.assignDaddyF.clicked.connect(self.updateDaddyF)
+        self.assignPalmO.clicked.connect(self.updatePalmO)
+        self.assignPalmC.clicked.connect(self.updatePalmC)
+        self.assignThumbsU.clicked.connect(self.updateThumbsU)
+        self.assignThumbsD.clicked.connect(self.updateThumbsD)
+        self.buttonPressed = False
+
         # Configure timer for screen recording
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.show_frame)
@@ -32,6 +43,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.actions = None
         self.__load_actions()
+        self.__set_labels()
 
     def stopRecording(self):
         self.startButton.setEnabled(True)
@@ -62,16 +74,42 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Show image as a pixelmap on labelCam
         self.labelCam.setPixmap(pixmap)
 
-    def update_actions(self):
-        action = self.ketTextbox.toPlainText()
-        if len(action) == 0 or len(action) > 1:
-            return
+    def updateFist(self):
+        action = self.__update_actions('fist')
+        self.actionFist.setText(action)
 
-        gesture = self.inferenceObject.processFrame(self.frame)
-        print(gesture)
-        if gesture != 'nothing':
-            self.actions[gesture] = action
-            self.__save_actions()
+    def updateDaddyF(self):
+        self.actionDaddyF.setText("PRESS ANY KEY")
+        self.actionDaddyF.setText(self.__update_actions('daddy_finger'))
+
+    def updatePalmC(self):
+        self.actionPalmC.setText("PRESS ANY KEY")
+        self.actionPalmC.setText(self.__update_actions('palm_close'))
+
+    def updatePalmO(self):
+        self.actionPalmO.setText("PRESS ANY KEY")
+        self.actionPalmO.setText(self.__update_actions('palm_open'))
+
+    def updateThumbsU(self):
+        self.actionThumbsU.setText("PRESS ANY KEY")
+        self.actionThumbsU.setText(self.__update_actions('thumbs_up'))
+
+    def updateThumbsD(self):
+        self.actionThumbsD.setText("PRESS ANY KEY")
+        self.actionThumbsD.setText(self.__update_actions('thumbs_down'))
+
+    def __update_actions(self, gesture):
+        if self.buttonPressed:
+            return self.actions[gesture].upper()
+        self.buttonPressed = True
+        action = keyboard.read_key()
+        if len(action) == 0:
+            return self.actions[gesture].upper()
+
+        self.actions[gesture] = action
+        self.__save_actions()
+        self.buttonPressed = False
+        return action.upper()
 
     def __load_actions(self):
         with open('data/actions.json', 'r') as f:
@@ -80,6 +118,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __save_actions(self):
         with open('data/actions.json', 'w') as f:
             json.dump(self.actions, f)
+
+    def __set_labels(self):
+        self.actionThumbsD.setText(self.actions['thumbs_down'].upper())
+        self.actionThumbsU.setText(self.actions['thumbs_up'].upper())
+        self.actionFist.setText(self.actions['fist'].upper())
+        self.actionPalmO.setText(self.actions['palm_open'].upper())
+        self.actionPalmC.setText(self.actions['palm_close'].upper())
+        self.actionDaddyF.setText(self.actions['daddy_finger'].upper())
 
 
 if __name__ == "__main__":
