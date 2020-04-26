@@ -41,7 +41,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def startRecording(self):
         self.startButton.setEnabled(False)
         self.stopButton.setEnabled(True)
-        self.timer.start(1);
+        self.timer.start(1)
 
     def show_frame(self):
         # Capture frame from webcam
@@ -68,6 +68,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
 
         gesture = self.inferenceObject.processFrame(self.frame)
+        print(gesture)
         if gesture != 'nothing':
             self.actions[gesture] = action
             self.__save_actions()
@@ -77,8 +78,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.actions = json.load(f)
 
     def __save_actions(self):
-        with open('data/actions.json','w') as f:
-            json.dump(self.actions,f)
+        with open('data/actions.json', 'w') as f:
+            json.dump(self.actions, f)
 
 
 if __name__ == "__main__":
