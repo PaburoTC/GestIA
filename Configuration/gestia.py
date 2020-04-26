@@ -1,7 +1,7 @@
 import sys
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from config_ui import *
+from config import *
 from detector import *
 import json
 
@@ -15,7 +15,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Connect application logic
         self.startButton.clicked.connect(self.startRecording)
         self.stopButton.clicked.connect(self.stopRecording)
-        self.assignButton.clicked.connect(self.update_actions)
+        #self.assignButton.clicked.connect(self.update_actions)
         # Configure timer for screen recording
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.show_frame)
@@ -66,11 +66,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         action = self.ketTextbox.toPlainText()
         if len(action) == 0 or len(action) > 1:
             return
-
         gesture = self.inferenceObject.processFrame(self.frame)
         print(gesture)
         if gesture != 'nothing':
-            self.actions[gesture] = action
+            self.actions[gest
             self.__save_actions()
 
     def __load_actions(self):
