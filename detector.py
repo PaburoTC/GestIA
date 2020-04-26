@@ -62,6 +62,7 @@ class InferenceModel:
         if self.exec_net.requests[self.cur_request_id].wait(-1) == 0:
             res = self.exec_net.requests[self.cur_request_id].outputs[self.out_blob]
             self.keyboard.action = ''
+            self.keyboard.block = False
             for obj in res[0][0]:
                 # Draw only objects when probability more than specified threshold
                 if obj[2] > 0.6:
