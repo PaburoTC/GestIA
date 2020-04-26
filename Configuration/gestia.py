@@ -3,6 +3,7 @@ import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from config_ui import *
 from detector import *
+import json
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -29,6 +30,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.inferenceObject = InferenceModel()
         self.inferenceObject.initialize()
 
+        self.actions = None
+        self.__load_actions()
+
     def stopRecording(self):
         self.startButton.setEnabled(True)
         self.timer.stop()
@@ -50,7 +54,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.label.setText("Detection: " + label_detected)
 
         # Process image to show on QtGui
-        image = QtGui.QImage(self.frame, self.frame.shape[1], self.frame.shape[0], self.frame.shape[1] * self.frame.shape[2],
+        image = QtGui.QImage(self.frame, self.frame.shape[1], self.frame.shape[0],
+                             self.frame.shape[1] * self.frame.shape[2],
                              QtGui.QImage.Format_RGB888)
         pixmap = QtGui.QPixmap()
         pixmap.convertFromImage(image.rgbSwapped())
@@ -59,22 +64,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def update_actions(self):
         action = self.ketTextbox.toPlainText()
-        if len(action) == 0 or len(action)>1:
+        if len(action) == 0 or len(action) > 1:
             return
 
         gesture = self.inferenceObject.processFrame(self.frame)
-        fd = open('data/actions.txt','r')
-        lines = fd.readlines()
-        print(gesture)
-        print(action)
-        for i in range(len(lines)):
-            print(lines[i])
-            if lines[i].__contains__(gesture):
-                lines[i]=gesture+":"+action+"\n"
+        if gesture != 'nothing':
+            self.actions[gesture] = action
+            self.__save_actions()
 
-        fd = open('data/actions.txt','w')
-        fd.writelines(lines)
-        fd.close()
+    def __load_actions(self):
+        with open('data/actions.json', 'r') as f:
+            self.actions = json.load(f)
+
+    def __save_actions(self):
+        with open('data/actions.json','w') as f:
+            json.dump(self.actions,f)
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
