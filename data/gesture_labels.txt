@@ -1,0 +1,10 @@
+no_label
+daddy_finger
+two
+three
+four
+palm_open
+palm_close
+thumbs_up
+thumbs_down
+fist
