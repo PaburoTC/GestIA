@@ -1,5 +1,6 @@
 import sys
 import cv2
+import keyboard
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from config import *
 from detector import *
@@ -15,7 +16,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Connect application logic
         self.startButton.clicked.connect(self.startRecording)
         self.stopButton.clicked.connect(self.stopRecording)
-        #self.assignButton.clicked.connect(self.update_actions)
+        self.assignFist.clicked.connect(self.update_actions)
+
         # Configure timer for screen recording
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.show_frame)
@@ -32,6 +34,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.actions = None
         self.__load_actions()
+        self.__set_labels()
 
     def stopRecording(self):
         self.startButton.setEnabled(True)
@@ -63,8 +66,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.labelCam.setPixmap(pixmap)
 
     def update_actions(self):
-        action = self.ketTextbox.toPlainText()
-        if len(action) == 0 or len(action) > 1:
+        action = keyboard.read_key()
+        if len(action) == 0:
             return
         gesture = self.inferenceObject.processFrame(self.frame)
         print(gesture)
@@ -79,6 +82,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __save_actions(self):
         with open('data/actions.json', 'w') as f:
             json.dump(self.actions, f)
+
+    def __set_labels(self):
+        self.actionThumbsD.setText(self.actions['thumbs_down'])
+        self.actionThumbsU.setText(self.actions['thumbs_up'])
+        self.actionFist.setText(self.actions['fist'])
+        self.actionPalmO.setText(self.actions['palm_open'])
+        self.actionPalmC.setText(self.actions['palm_close'])
+        self.actionDaddyF.setText(self.actions['daddy_finger'])
 
 
 if __name__ == "__main__":
