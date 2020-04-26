@@ -8,12 +8,14 @@ import time
 
 
 class InferenceModel:
-    def __init__(self, cpu=True):
+    def __init__(self, keyboardManager, cpu=True):
         model_xml = 'model/frozen_inference_graph.xml'
         model_bin = os.path.splitext(model_xml)[0] + ".bin"
         self.device_str = 'CPU' if cpu else 'null'
         self.ie = IECore()
         self.net = IENetwork(model=model_xml, weights=model_bin)
+        self.keyboard = keyboardManager
+
         if cpu:
             supported_layers = self.ie.query_network(self.net, "CPU")
             not_supported_layers = [l for l in self.net.layers.keys() if l not in supported_layers]
@@ -59,6 +61,7 @@ class InferenceModel:
         det_label = 'nothing'
         if self.exec_net.requests[self.cur_request_id].wait(-1) == 0:
             res = self.exec_net.requests[self.cur_request_id].outputs[self.out_blob]
+            self.keyboard.action = ''
             for obj in res[0][0]:
                 # Draw only objects when probability more than specified threshold
                 if obj[2] > 0.6:
@@ -75,4 +78,6 @@ class InferenceModel:
                     det_label = self.labels_map[class_id] if self.labels_map else str(class_id)
                     # cv2.putText(frame, det_label + ' ' + str(round(obj[2] * 100, 1)) + ' %', (xmin, ymin - 7),
                     #            cv2.FONT_HERSHEY_COMPLEX, 0.6, color, 1)
+                    self.keyboard.addAction(det_label)
+            self.keyboard.executeInput()
         return det_label

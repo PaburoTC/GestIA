@@ -5,8 +5,9 @@ import cv2
 import keyboard
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from config import *
-from detector import *
+from detector import InferenceModel
 import json
+from keyboardManager import keyboardManager
 
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -37,13 +38,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # GUI enable/disable logic
         self.stopButton.setEnabled(False)
 
-        # Inference Model Object
-        self.inferenceObject = InferenceModel()
-        self.inferenceObject.initialize()
-
         self.actions = None
         self.__load_actions()
         self.__set_labels()
+
+        self.keyboard = keyboardManager(self.actions)
+
+        # Inference Model Object
+        self.inferenceObject = InferenceModel(self.keyboard)
+        self.inferenceObject.initialize()
 
     def stopRecording(self):
         self.startButton.setEnabled(True)
