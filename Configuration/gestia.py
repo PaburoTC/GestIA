@@ -69,7 +69,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         gesture = self.inferenceObject.processFrame(self.frame)
         print(gesture)
         if gesture != 'nothing':
-            self.actions[gest
+            self.actions[gesture] = action
             self.__save_actions()
 
     def __load_actions(self):
