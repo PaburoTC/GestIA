@@ -1,10 +1,10 @@
-fist
+no_label
 daddy_finger
-palm_close
-palm_open
-thumbs_up
-thumbs_down
 two
 three
 four
-xD
+palm_open
+palm_close
+thumbs_up
+thumbs_down
+fist
