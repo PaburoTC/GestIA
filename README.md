@@ -45,27 +45,16 @@ So far GestIA recognizes these signs:
 
 - Fist
 
-![Fist](images/fist.jpeg)
-
 - Palm closed
-
-![Palm closed](images/palm_closed.jpg)
 
 - Palm open
 
-![Palm open](images/palm_open.jpg)
-
 - Thumbs Up
-
-![Thumps up](images/thumbs_up.jpg)
 
 - Thumbs down
 
-![Thumps down](images/thumbs_down.jpg)
+- Daddy Finger (index finger up)
 
-- Daddy Finger
-
-![Thumps down](images/daddy_finger.jpg)
 
 
 The uses of GestIA are only limited by your imagination, let us know how do you use GestIA!
