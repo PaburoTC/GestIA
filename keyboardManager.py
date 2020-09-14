@@ -15,8 +15,6 @@ class keyboardManager():
         if self.action[len(self.action) - 1:] == '+':
             self.action = self.action[:-1]
 
-        print(self.action)
-        print(len(self.action))
         keyboard.press(self.action)
         time.sleep(0.5)
         keyboard.release(self.action)
