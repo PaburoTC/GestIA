@@ -36,6 +36,7 @@ python gestia.py
 ```
 
 After which you should see GestIA!
+
 ![Gestia](images/GestIA.png)
 
 Before you click Start, and thus start to translate your gestures into keyboard inputs, first you can assign each 
