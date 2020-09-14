@@ -19,7 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89addd3d-a244-4561-9b8c-c4895ace2b06" name="Default Changelist" comment="">
+    <list default="true" id="89addd3d-a244-4561-9b8c-c4895ace2b06" name="Default Changelist" comment="New model">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
@@ -78,7 +78,7 @@
       <workItem from="1588675684421" duration="37000" />
       <workItem from="1589135105917" duration="16000" />
       <workItem from="1600080680743" duration="2757000" />
-      <workItem from="1600099936716" duration="3459000" />
+      <workItem from="1600099936716" duration="3803000" />
     </task>
     <task id="LOCAL-00001" summary="New model">
       <created>1588417983214</created>
@@ -110,6 +110,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="New model" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="499" y="100" width="912" height="904" key="CommitChangelistDialog2" timestamp="1600103522211">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="499" y="100" width="912" height="904" key="CommitChangelistDialog2/0.27.1920.1053/1920.0.1920.1080@0.27.1920.1053" timestamp="1600103522211" />
     <state x="2605" y="453" width="540" height="172" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1600081231753">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
