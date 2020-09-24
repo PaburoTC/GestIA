@@ -16,7 +16,7 @@ $ pip install -r requirements.txt
 ```
 ### Windows
 
-For GestIA to work on Widnows it suffices to activate OpenVino before running the program. To do so, run the following command from the app directory:
+For GestIA to work on Windows it suffices to activate OpenVino before running the program. To do so, run the following command from the app directory:
 ```
 $ call "C:\Program Files (x86)\IntelSWTools\openvino\bin\setupvars.bat"
 [setupvars.bat] OpenVINO environment initialized
